@@ -72,6 +72,29 @@ Al ir a documentar la activación del panel se comprobó que **Netlify retiró G
 
 **Pendiente para publicar:** crear el sitio en decapbridge.com, sustituir `IDENTIFICADOR-DECAPBRIDGE` en `public/admin/config.yml` e invitar al administrador por correo. Hasta entonces `/admin` carga pero no permite iniciar sesión.
 
+### Despliegue en Netlify: estado y hallazgos (2026-09-02)
+
+El cliente creó la cuenta y vinculó el repositorio. Sitio en `dancing-banoffee-e7072f.netlify.app` (nombre autogenerado; irrelevante una vez que apunte el dominio).
+
+**Bloqueos y riesgos detectados al verificar:**
+
+1. **El sitio responde 401.** Tiene activada la protección de acceso de Netlify: solo el equipo puede verlo. Se desactiva en *Site configuration → Access & security → Visitor access*.
+2. **RIESGO ALTO — correo corporativo.** `metalmotta.com` tiene registros MX apuntando a `metalmotta-com.mail.protection.outlook.com`: la empresa usa **Microsoft 365**. Cambiar los *nameservers* a Netlify tumbaría el correo de toda la empresa. La migración debe hacerse **manteniendo el DNS en GoDaddy** y cambiando solo los registros `A` y `CNAME`.
+3. **El dominio ya sirve un sitio.** `metalmotta.com` tiene una web publicada con el constructor de GoDaddy, con secciones HOME · SOBRE NOSOTROS · **NUESTRAS MARCAS** · PROMOCIONES · CONTACTO y funciones de tienda (cuentas de usuario y pedidos). El cliente confirmó que puede reemplazarse: nadie usa esas cuentas.
+4. **Contradicción con el levantamiento:** el sitio actual dedica una sección entera a marcas, pese a que el cliente indicó que no tenía marcas de preferencia. Pendiente de aclarar si deben aparecer en el sitio nuevo.
+5. El cliente dio `contactometalmotta@gmail.com`, pero existe correo corporativo en el dominio. Pendiente decidir cuál se publica.
+
+### Identidad visual real (2026-09-02)
+
+Del sitio anterior se recuperaron **el logotipo en PNG con transparencia** (559×295) y **seis fotografías del local**, incluida la fachada a 2560×1920. Esto desbloqueó lo que estaba pendiente desde el principio.
+
+- **Paleta muestreada del logotipo**, sustituyendo la aproximación: azul profundo `#002060`, azul medio `#0078c0` (único válido para texto sobre blanco, 4,7:1), azul vivo `#0090d8` (solo gráficos) y amarillo `#f0d800` del overol del operario.
+- **Foco en azul vivo:** el amarillo rinde 10,6:1 sobre azul profundo pero 1,5:1 sobre blanco, donde sería invisible. Sobre secciones oscuras se mantiene el amarillo.
+- Logotipo en cabecera y fachada como fondo de portada, con velo al 96 % que garantiza el contraste del texto.
+- Imágenes optimizadas por `astro:assets`: logotipo de 192 KB → **4 KB**, fachada de 767 KB → **36 KB** en móvil. Portada completa en móvil: **96 KB**.
+
+**Nota de diseño pendiente:** el logotipo es ilustrativo (operario de dibujo, degradados, contorno grueso, estilo de hace dos décadas) y contrasta con el sistema sobrio del sitio. Está integrado a tamaño contenido, pero conviene decidir con el cliente si se conserva así, se reserva para pie y favicon, o se encarga una versión simplificada.
+
 ### Repositorio Git
 
 El proyecto ya está bajo control de versiones: rama `main`, commit inicial con **39 archivos**. Quedan fuera `node_modules`, `dist`, `graphify-out`, `.agents/`, `agent/` y `.claude/skills/` (regenerables). Verificado que no se versiona ningún secreto ni archivo mayor de 200 KB.
