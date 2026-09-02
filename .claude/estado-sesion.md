@@ -64,7 +64,19 @@ Si no hay promociones vigentes, la sección **no se renderiza**: nunca aparece v
 
 **Falsos positivos descartados:** el panel del navegador reporta `clientWidth = 0`, lo que hacía aparecer objetivos táctiles pequeños y scroll horizontal inexistentes. Confirmado midiendo con dimensiones fijas.
 
-**Pendiente para publicar:** activar Identity y Git Gateway en Netlify e invitar al administrador por correo. Hasta entonces `/admin` carga pero no permite iniciar sesión.
+### Corrección de autenticación (Git Gateway está obsoleto)
+
+Al ir a documentar la activación del panel se comprobó que **Netlify retiró Git Gateway**, que era justo la pieza que unía Netlify Identity con Decap. Identity sigue soportado (Netlify revirtió su retirada en febrero de 2026), pero sin Git Gateway no sirve para este uso.
+
+**Sustituido por DecapBridge** (elección del cliente): habla el mismo protocolo `git-gateway` desde sus propios servidores, es gratuito y no exige Auth0 ni un servidor OAuth propio. Se retiró también el widget de Netlify Identity de `public/admin/index.html`, que ya solo estorbaba.
+
+**Pendiente para publicar:** crear el sitio en decapbridge.com, sustituir `IDENTIFICADOR-DECAPBRIDGE` en `public/admin/config.yml` e invitar al administrador por correo. Hasta entonces `/admin` carga pero no permite iniciar sesión.
+
+### Repositorio Git
+
+El proyecto ya está bajo control de versiones: rama `main`, commit inicial con **39 archivos**. Quedan fuera `node_modules`, `dist`, `graphify-out`, `.agents/`, `agent/` y `.claude/skills/` (regenerables). Verificado que no se versiona ningún secreto ni archivo mayor de 200 KB.
+
+**Aún no está subido a ningún servidor remoto.**
 
 **Peso:** 40 KB de HTML + 44 KB de JS. Bajo el presupuesto de 200 KB.
 

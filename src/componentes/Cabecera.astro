@@ -1,7 +1,9 @@
 ---
+import { Image } from 'astro:assets';
 import { empresa, enlaceWhatsApp } from '../datos/empresa.js';
 import EstadoHorario from './EstadoHorario.astro';
 import Icono from './Icono.astro';
+import logotipo from '../imagenes/logotipo.png';
 
 const { rutaActual } = Astro.props;
 
@@ -28,8 +30,14 @@ const enlaces = [
   <div class="cabecera__principal">
     <div class="contenedor cabecera__interior">
       <a href="/" class="marca" aria-label={`${empresa.nombreComercial}, ir al inicio`}>
-        <!-- PROVISIONAL: marca tipográfica hasta recibir el logotipo vectorial -->
-        <span class="marca__nombre">Metal Motta</span>
+        <Image
+          class="marca__logo"
+          src={logotipo}
+          alt="Metal Motta"
+          height={42}
+          densities={[1, 2]}
+          loading="eager"
+        />
         <span class="marca__descriptor">Ferretería y maquinarias</span>
       </a>
 
@@ -142,7 +150,7 @@ const enlaces = [
 
   .cabecera__ciudad {
     font-size: var(--texto-xs);
-    color: #9fb6c9;
+    color: var(--color-sobre-oscuro-tenue);
   }
 
   .cabecera__principal {
@@ -167,17 +175,17 @@ const enlaces = [
     line-height: 1.1;
   }
 
-  .marca__nombre {
+  /* El logotipo es ilustrativo y de trazo grueso. Se le da altura contenida y
+     el descriptor debajo aporta la información que el dibujo no da. */
+  .marca__logo {
     display: block;
-    font-family: var(--fuente-titulo);
-    font-weight: 800;
-    font-size: 1.4rem;
-    letter-spacing: -0.03em;
-    color: var(--color-azul-profundo);
+    height: 42px;
+    width: auto;
   }
 
   .marca__descriptor {
     display: block;
+    margin-top: 2px;
     font-size: 0.72rem;
     letter-spacing: 0.02em;
     color: var(--color-gris-texto);
@@ -324,8 +332,8 @@ const enlaces = [
       display: none;
     }
 
-    .marca__nombre {
-      font-size: 1.25rem;
+    .marca__logo {
+      height: 34px;
     }
 
     .cabecera__accion {

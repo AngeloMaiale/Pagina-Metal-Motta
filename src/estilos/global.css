@@ -8,21 +8,30 @@
    Restricción del cliente: "sin que se vea muy cargada" → mucho aire, pocos
    elementos por pantalla y una sola acción dominante por sección.
 
-   PROVISIONAL: los azules son una aproximación al logo. Sustituir por los HEX
-   exactos cuando llegue el logotipo vectorial (ver docs/datos-empresa.md).
-   Al cambiarlos, revalidar contraste.
+   Los colores salen del logotipo real de la empresa, muestreados del archivo
+   con transparencia. Cada uno lleva anotado su contraste medido y, por tanto,
+   dónde puede usarse. No improvisar valores nuevos sin volver a medir.
    ========================================================================== */
 
 :root {
-  /* --- Color ------------------------------------------------------------- */
-  --color-azul-profundo: #0b2c4a;
-  --color-azul-medio: #12507e;
-  --color-azul-vivo: #1a73b8;
-  --color-azul-tenue: #e8f0f7;
+  /* --- Color -------------------------------------------------------------
+     Muestreados del logotipo. Los contrastes indicados están calculados. */
 
-  /* Ámbar de señalización industrial. Solo sobre fondo oscuro o como grafismo:
-     sobre blanco no alcanza el contraste mínimo para texto. */
-  --color-ambar: #f5a623;
+  /* 15.3:1 sobre blanco. Texto principal y fondos oscuros. */
+  --color-azul-profundo: #002060;
+  /* 4.7:1 sobre blanco. El único azul admisible para texto sobre claro. */
+  --color-azul-medio: #0078c0;
+  /* 3.5:1 sobre blanco. Solo iconos, bordes y foco; nunca texto. */
+  --color-azul-vivo: #0090d8;
+  --color-azul-tenue: #e6f1fa;
+
+  /* Textos sobre fondo azul profundo */
+  --color-sobre-oscuro: #b9cfe8; /* 9.6:1 — párrafos */
+  --color-sobre-oscuro-tenue: #8fa8c8; /* 5.9:1 — datos secundarios */
+
+  /* Amarillo del overol del operario del logotipo. 10.6:1 sobre el azul
+     profundo, pero 1.5:1 sobre blanco: solo sobre fondo oscuro. */
+  --color-amarillo: #f0d800;
 
   /* Verde de WhatsApp con texto azul profundo encima: conserva el color
      reconocible de la marca y alcanza ~7:1. Con texto blanco daría 2:1. */
@@ -177,10 +186,22 @@ select {
 
 /* --- Accesibilidad ------------------------------------------------------- */
 
+/* El indicador de foco tiene que verse sobre fondo claro y sobre el azul
+   profundo. El amarillo del logotipo sirve sobre oscuro pero desaparece sobre
+   blanco (1,5:1); el azul vivo supera el 3:1 exigido en ambos casos. */
 :focus-visible {
-  outline: 3px solid var(--color-ambar);
+  outline: 3px solid var(--color-azul-vivo);
   outline-offset: 3px;
   border-radius: 2px;
+}
+
+/* Sobre el azul profundo, el amarillo destaca mucho más (10,6:1) */
+.seccion--oscura :focus-visible,
+.portada :focus-visible,
+.pie :focus-visible,
+.encabezado :focus-visible,
+.cabecera__barra :focus-visible {
+  outline-color: var(--color-amarillo);
 }
 
 .salto-contenido {
@@ -344,7 +365,7 @@ select {
 }
 
 .seccion--oscura .parrafo-guia {
-  color: #c6d6e4;
+  color: var(--color-sobre-oscuro);
 }
 
 /* Valores numéricos: misma familia que el resto, con cifras de ancho fijo para
