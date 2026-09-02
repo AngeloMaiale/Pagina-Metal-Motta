@@ -1,0 +1,181 @@
+---
+import Base from '../plantillas/Base.astro';
+import EncabezadoPagina from '../componentes/EncabezadoPagina.astro';
+import EstadoHorario from '../componentes/EstadoHorario.astro';
+import { empresa } from '../datos/empresa.js';
+
+const { direccion } = empresa;
+const mapaIncrustado = `https://www.google.com/maps?q=${direccion.latitud},${direccion.longitud}&hl=es&z=17&output=embed`;
+---
+
+<Base
+  titulo="Ubicación y horario"
+  descripcion="Metal Motta está en Av. 58 con Calle 99, entrada principal al Barrio Bolívar, Maracaibo. Lunes a viernes de 8:00 a 17:00 y sábados de 9:00 a 14:00."
+  rutaActual="/ubicacion"
+>
+  <EncabezadoPagina
+    titulo="Dónde estamos"
+    entrada="Entrada principal al Barrio Bolívar, en Maracaibo. Con estacionamiento y patio para cargar material pesado."
+  />
+
+  <section class="seccion">
+    <div class="contenedor ubicacion">
+      <div>
+        <h2 class="titulo-seccion">Dirección</h2>
+        <address class="ubicacion__direccion">
+          {direccion.calle}<br />
+          {direccion.ciudad}, {direccion.region} {direccion.codigoPostal}<br />
+          {direccion.pais}
+        </address>
+
+        <h3 class="ubicacion__subtitulo">Cómo ubicarnos</h3>
+        <p class="ubicacion__referencia">{direccion.referencia}</p>
+
+        <ul class="instalaciones">
+          {empresa.instalaciones.map((instalacion) => <li>{instalacion}</li>)}
+        </ul>
+
+        <a class="boton boton--whatsapp" href={direccion.enlaceMapa} target="_blank" rel="noopener">
+          Abrir en Google Maps
+        </a>
+      </div>
+
+      <div>
+        <h2 class="titulo-seccion">Horario</h2>
+        <div class="ubicacion__estado">
+          <EstadoHorario />
+        </div>
+
+        <dl class="horario">
+          <div class="horario__fila">
+            <dt>Lunes a viernes</dt>
+            <dd>8:00 – 17:00</dd>
+          </div>
+          <div class="horario__fila">
+            <dt>Sábado</dt>
+            <dd>9:00 – 14:00</dd>
+          </div>
+          <div class="horario__fila">
+            <dt>Domingo</dt>
+            <dd>Cerrado</dd>
+          </div>
+        </dl>
+
+        <p class="horario__nota">
+          En días festivos solemos abrir, pero no es fijo. Escríbenos antes de
+          venir y te confirmamos.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion seccion--suave">
+    <div class="contenedor">
+      <h2 class="titulo-seccion">Cómo llegar</h2>
+      <div class="mapa">
+        <iframe
+          src={mapaIncrustado}
+          title="Mapa con la ubicación de Metal Motta en Maracaibo"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ubicacion {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--espacio-2xl) var(--espacio-xl);
+  }
+
+  .ubicacion__direccion {
+    font-style: normal;
+    font-size: var(--texto-md);
+    line-height: 1.7;
+  }
+
+  .ubicacion__subtitulo {
+    margin-top: var(--espacio-lg);
+    font-size: var(--texto-base);
+  }
+
+  .ubicacion__referencia {
+    margin-top: var(--espacio-2xs);
+    color: var(--color-gris-texto);
+    max-width: 34ch;
+  }
+
+  .instalaciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-xs);
+    margin-top: var(--espacio-md);
+    padding: 0;
+    list-style: none;
+  }
+
+  .instalaciones li {
+    padding: var(--espacio-2xs) var(--espacio-sm);
+    border: var(--borde);
+    border-radius: var(--radio);
+    font-size: var(--texto-sm);
+    color: var(--color-gris-texto);
+  }
+
+  .ubicacion .boton {
+    margin-top: var(--espacio-lg);
+  }
+
+  .ubicacion__estado {
+    margin-bottom: var(--espacio-md);
+  }
+
+  .horario__fila {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--espacio-md);
+    padding-block: var(--espacio-sm);
+    border-bottom: var(--borde);
+    max-width: 24rem;
+  }
+
+  .horario__fila dd {
+    margin: 0;
+    font-size: var(--texto-sm);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .horario__nota {
+    margin-top: var(--espacio-md);
+    font-size: var(--texto-sm);
+    color: var(--color-gris-texto);
+    max-width: 36ch;
+  }
+
+  /* El mapa se carga en diferido: es el elemento más pesado del sitio y no
+     debe competir con el contenido principal en conexiones lentas. */
+  .mapa {
+    margin-top: var(--espacio-md);
+    aspect-ratio: 16 / 9;
+    border: var(--borde);
+    border-radius: var(--radio);
+    overflow: hidden;
+    background-color: var(--color-gris-borde);
+  }
+
+  .mapa iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  @media (max-width: 600px) {
+    .mapa {
+      aspect-ratio: 4 / 3;
+    }
+  }
+</style>

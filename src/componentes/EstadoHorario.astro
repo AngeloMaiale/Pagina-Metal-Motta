@@ -1,0 +1,129 @@
+---
+// Indica si la ferretería está abierta en este momento.
+// Es el dato de mayor valor para quien llega con una urgencia.
+//
+// Se calcula siempre en la zona horaria del negocio (America/Caracas), no en la
+// del visitante: el horario que importa es el del local.
+//
+// Mejora progresiva: sin JavaScript se muestra el horario en texto, que sigue
+// siendo información útil. El estado en vivo se añade encima.
+import { empresa } from '../datos/empresa.js';
+
+const { compacto = false } = Astro.props;
+---
+
+<div class:list={['estado', { 'estado--compacto': compacto }]} data-estado-horario>
+  <span class="estado__indicador" aria-hidden="true"></span>
+  <span class="estado__texto">
+    Lun a Vie 8:00–17:00 · Sáb 9:00–14:00
+  </span>
+</div>
+
+<script define:vars={{ horarios: empresa.horarios, zona: empresa.zonaHoraria }}>
+  // Devuelve el día de la semana (0 = domingo) y los minutos transcurridos del
+  // día, ambos en la zona horaria del negocio.
+  function momentoEnZonaDelNegocio() {
+    const partes = new Intl.DateTimeFormat('en-US', {
+      timeZone: zona,
+      weekday: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).formatToParts(new Date());
+
+    const valor = (tipo) => partes.find((p) => p.type === tipo)?.value ?? '';
+    const dias = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+
+    // A medianoche algunos entornos devuelven "24" en lugar de "00".
+    const hora = parseInt(valor('hour'), 10) % 24;
+    const minuto = parseInt(valor('minute'), 10);
+
+    return { dia: dias[valor('weekday')], minutos: hora * 60 + minuto };
+  }
+
+  function aMinutos(horaTexto) {
+    const [hora, minuto] = horaTexto.split(':').map(Number);
+    return hora * 60 + minuto;
+  }
+
+  function actualizarEstado() {
+    const { dia, minutos } = momentoEnZonaDelNegocio();
+    const horarioDeHoy = horarios[dia];
+    const abierto =
+      horarioDeHoy.abre !== null &&
+      minutos >= aMinutos(horarioDeHoy.abre) &&
+      minutos < aMinutos(horarioDeHoy.cierra);
+
+    // Siguiente día con atención, para decir cuándo se vuelve a abrir.
+    let proximo = null;
+    for (let salto = 1; salto <= 7; salto++) {
+      const candidato = horarios[(dia + salto) % 7];
+      if (candidato.abre !== null) {
+        proximo = candidato;
+        break;
+      }
+    }
+
+    document.querySelectorAll('[data-estado-horario]').forEach((elemento) => {
+      const texto = elemento.querySelector('.estado__texto');
+      elemento.dataset.abierto = String(abierto);
+
+      if (abierto) {
+        texto.textContent = `Abierto ahora · cierra a las ${horarioDeHoy.cierra}`;
+      } else if (horarioDeHoy.abre !== null && minutos < aMinutos(horarioDeHoy.abre)) {
+        texto.textContent = `Cerrado · abre hoy a las ${horarioDeHoy.abre}`;
+      } else if (proximo) {
+        texto.textContent = `Cerrado · abre ${proximo.dia.toLowerCase()} a las ${proximo.abre}`;
+      }
+    });
+  }
+
+  actualizarEstado();
+  // Se revisa cada minuto para que el estado no quede obsoleto en una pestaña abierta.
+  setInterval(actualizarEstado, 60000);
+  // Y se recalcula tras cada navegación sin recarga.
+  document.addEventListener('astro:page-load', actualizarEstado);
+</script>
+
+<style>
+  .estado {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--espacio-xs);
+    padding: var(--espacio-2xs) var(--espacio-sm);
+    border: 1px solid var(--color-gris-borde);
+    border-radius: 999px;
+    font-size: var(--texto-xs);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .estado__indicador {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--color-gris-texto);
+    flex-shrink: 0;
+  }
+
+  /* El estado nunca se comunica solo con color: el texto siempre dice
+     "Abierto" o "Cerrado" (WCAG 1.4.1 Uso del color). */
+  .estado[data-abierto='true'] .estado__indicador {
+    background-color: #16a34a;
+  }
+
+  .estado[data-abierto='false'] .estado__indicador {
+    background-color: #b91c1c;
+  }
+
+  .estado--compacto {
+    border: none;
+    padding: 0;
+  }
+
+  /* Sobre fondo oscuro */
+  :global(.seccion--oscura) .estado,
+  :global(.cabecera__barra) .estado {
+    border-color: rgba(255, 255, 255, 0.28);
+    color: #fff;
+  }
+</style>

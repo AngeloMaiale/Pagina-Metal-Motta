@@ -1,0 +1,201 @@
+---
+import { empresa, aniosDeTrayectoria, enlaceWhatsApp } from '../datos/empresa.js';
+import { departamentos } from '../datos/departamentos.js';
+import Icono from './Icono.astro';
+---
+
+<footer class="pie">
+  <div class="contenedor">
+    <div class="pie__superior">
+      <div class="pie__marca">
+        <p class="pie__nombre">Metal Motta</p>
+        <p class="pie__razon">{empresa.nombreCompleto}</p>
+        <p class="pie__anios">{aniosDeTrayectoria} años en Maracaibo</p>
+      </div>
+
+      <div class="pie__bloque">
+        <h2 class="pie__titulo">Dónde estamos</h2>
+        <address class="pie__texto">
+          {empresa.direccion.calle}<br />
+          {empresa.direccion.referencia}<br />
+          {empresa.direccion.ciudad}, {empresa.direccion.region}
+        </address>
+        <a class="pie__enlace" href={empresa.direccion.enlaceMapa} target="_blank" rel="noopener">
+          Cómo llegar
+        </a>
+      </div>
+
+      <div class="pie__bloque">
+        <h2 class="pie__titulo">Horario</h2>
+        <dl class="pie__horario">
+          <div><dt>Lun a Vie</dt><dd class="dato">8:00 – 17:00</dd></div>
+          <div><dt>Sábado</dt><dd class="dato">9:00 – 14:00</dd></div>
+          <div><dt>Domingo</dt><dd>Cerrado</dd></div>
+        </dl>
+      </div>
+
+      <div class="pie__bloque">
+        <h2 class="pie__titulo">Contacto</h2>
+        <a
+          class="pie__enlace pie__enlace--destacado"
+          href={enlaceWhatsApp('Hola, quisiera hacer una consulta.')}
+          target="_blank"
+          rel="noopener"
+        >
+          <Icono nombre="whatsapp" tamano={17} />
+          {empresa.contacto.whatsappVisible}
+        </a>
+        <a class="pie__enlace" href={`mailto:${empresa.contacto.correo}`}>
+          {empresa.contacto.correo}
+        </a>
+        <div class="pie__redes">
+          <a class="pie__enlace" href={empresa.redes.instagram} target="_blank" rel="noopener">
+            Instagram
+          </a>
+          <a class="pie__enlace" href={empresa.redes.facebook} target="_blank" rel="noopener">
+            Facebook
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <nav class="pie__departamentos" aria-label="Departamentos">
+      {
+        departamentos.map((departamento) => (
+          <a class="pie__departamento" href={`/productos#${departamento.ruta}`}>
+            {departamento.nombre}
+          </a>
+        ))
+      }
+    </nav>
+
+    <p class="pie__legal">
+      © {new Date().getFullYear()} {empresa.razonSocial} · Maracaibo, Venezuela
+    </p>
+  </div>
+</footer>
+
+<style>
+  .pie {
+    background-color: var(--color-azul-profundo);
+    color: #fff;
+    padding-block: var(--espacio-xl) var(--espacio-lg);
+  }
+
+  .pie__superior {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--espacio-xl) var(--espacio-lg);
+    padding-bottom: var(--espacio-xl);
+  }
+
+  .pie__nombre {
+    font-family: var(--fuente-titulo);
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  .pie__razon {
+    font-size: var(--texto-sm);
+    color: #9fb6c9;
+    margin-top: var(--espacio-2xs);
+    max-width: 24ch;
+  }
+
+  .pie__anios {
+    margin-top: var(--espacio-xs);
+    font-size: var(--texto-sm);
+    color: var(--color-ambar);
+  }
+
+  .pie__titulo {
+    font-family: var(--fuente-cuerpo);
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: var(--espacio-sm);
+  }
+
+  .pie__texto {
+    font-style: normal;
+    font-size: var(--texto-sm);
+    color: #c6d6e4;
+    line-height: 1.7;
+  }
+
+  .pie__enlace {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--espacio-xs);
+    min-height: 34px;
+    margin-top: var(--espacio-2xs);
+    font-size: var(--texto-sm);
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: rgb(255 255 255 / 35%);
+    transition: text-decoration-color var(--transicion);
+  }
+
+  .pie__enlace:hover {
+    text-decoration-color: #fff;
+  }
+
+  .pie__enlace--destacado {
+    font-weight: 600;
+  }
+
+  .pie__redes {
+    display: flex;
+    gap: var(--espacio-md);
+    margin-top: var(--espacio-xs);
+  }
+
+  .pie__horario div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--espacio-md);
+    padding-block: 3px;
+    font-size: var(--texto-sm);
+    max-width: 250px;
+  }
+
+  .pie__horario dt {
+    color: #c6d6e4;
+  }
+
+  .pie__horario dd {
+    margin: 0;
+    font-size: var(--texto-xs);
+  }
+
+  .pie__departamentos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-2xs) var(--espacio-md);
+    padding-block: var(--espacio-lg);
+    border-top: 1px solid rgb(255 255 255 / 16%);
+  }
+
+  .pie__departamento {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    font-size: var(--texto-sm);
+    color: #c6d6e4;
+    text-decoration: none;
+    transition: color var(--transicion);
+  }
+
+  .pie__departamento:hover {
+    color: #fff;
+  }
+
+  .pie__legal {
+    padding-top: var(--espacio-lg);
+    border-top: 1px solid rgb(255 255 255 / 16%);
+    font-size: var(--texto-xs);
+    color: #9fb6c9;
+  }
+</style>

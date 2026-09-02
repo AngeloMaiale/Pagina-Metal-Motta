@@ -1,0 +1,95 @@
+# Panel de administración de Metal Motta (Decap CMS)
+#
+# Solo gestiona promociones: es lo único que cambia con frecuencia. El resto del
+# contenido vive en el código, donde no puede romperse por accidente.
+#
+# AUTENTICACIÓN: DecapBridge, no Netlify Identity.
+# Netlify mantiene Identity, pero retiró Git Gateway, que era la pieza que lo
+# conectaba con Decap. DecapBridge lo sustituye hablando el mismo protocolo
+# desde sus propios servidores, sin Auth0 ni servidor OAuth propio.
+#
+# PENDIENTE ANTES DE PUBLICAR:
+#   1. Crear el sitio en https://decapbridge.com (botón "Create site").
+#   2. Copiar el identificador que genera y sustituir IDENTIFICADOR-DECAPBRIDGE
+#      en identity_url. El resto de la configuración ya está lista.
+#   3. Invitar al administrador por correo desde el panel de DecapBridge.
+# Mientras el identificador sea el marcador de posición, /admin carga pero no
+# permite iniciar sesión.
+
+backend:
+  name: git-gateway
+  branch: main
+  identity_url: https://auth.decapbridge.com/sites/IDENTIFICADOR-DECAPBRIDGE
+  gateway_url: https://gateway.decapbridge.com
+  commit_messages:
+    create: 'Promoción nueva: {{collection}} "{{slug}}"'
+    update: 'Promoción actualizada: {{collection}} "{{slug}}"'
+    delete: 'Promoción eliminada: {{collection}} "{{slug}}"'
+    openAuthoring: '{{message}}'
+
+# Guarda un borrador antes de publicar, para poder revisar sin que salga al aire.
+publish_mode: editorial_workflow
+
+locale: es
+media_folder: 'public/imagenes/promociones'
+public_folder: '/imagenes/promociones'
+
+collections:
+  - name: promociones
+    label: Promociones
+    label_singular: Promoción
+    folder: src/contenido/promociones
+    create: true
+    delete: true
+    slug: '{{year}}-{{month}}-{{slug}}'
+    summary: '{{titulo}} — hasta {{fechaFin}}'
+    sortable_fields: [fechaFin, fechaInicio, titulo]
+    fields:
+      - label: Título
+        name: titulo
+        widget: string
+        hint: Corto y concreto. Ejemplo, "Pintura de caucho al mejor precio".
+
+      - label: Resumen
+        name: resumen
+        widget: text
+        hint: Una o dos líneas explicando la promoción. Sin precios si pueden cambiar.
+
+      - label: Desde
+        name: fechaInicio
+        widget: datetime
+        date_format: 'DD/MM/YYYY'
+        time_format: false
+        picker_utc: false
+        hint: Día en que la promoción empieza a mostrarse en la página.
+
+      - label: Hasta
+        name: fechaFin
+        widget: datetime
+        date_format: 'DD/MM/YYYY'
+        time_format: false
+        picker_utc: false
+        hint: >-
+          Último día que se muestra, incluido. Al día siguiente desaparece sola
+          de la página; no hay que borrarla a mano.
+
+      - label: Mensaje de WhatsApp
+        name: mensajeWhatsApp
+        widget: string
+        required: false
+        hint: >-
+          Texto con el que se abre la conversación al pulsar el botón. Si se deja
+          vacío, se arma solo con el título.
+
+      - label: Destacada
+        name: destacada
+        widget: boolean
+        default: false
+        required: false
+        hint: Marca la promoción como principal.
+
+      - label: Detalle
+        name: body
+        widget: markdown
+        required: false
+        hint: Notas internas o detalle adicional. No se muestra en la portada.

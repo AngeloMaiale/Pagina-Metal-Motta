@@ -1,0 +1,100 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import { empresa } from '../datos/empresa.js';
+import Cabecera from '../componentes/Cabecera.astro';
+import PieDePagina from '../componentes/PieDePagina.astro';
+import '../estilos/global.css';
+
+const { titulo, descripcion, rutaActual = '/' } = Astro.props;
+
+const tituloCompleto = `${titulo} | ${empresa.nombreComercial} — Ferretería en Maracaibo`;
+
+// Datos estructurados para búsqueda local. Es lo que permite que Google muestre
+// horario, dirección y teléfono directamente en los resultados.
+const datosEstructurados = {
+  '@context': 'https://schema.org',
+  '@type': 'HardwareStore',
+  name: empresa.nombreCompleto,
+  alternateName: empresa.nombreComercial,
+  foundingDate: String(empresa.anioFundacion),
+  url: 'https://metalmotta.com',
+  telephone: `+${empresa.contacto.whatsapp}`,
+  email: empresa.contacto.correo,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: empresa.direccion.calle,
+    addressLocality: empresa.direccion.ciudad,
+    addressRegion: empresa.direccion.region,
+    postalCode: empresa.direccion.codigoPostal,
+    addressCountry: empresa.direccion.paisCodigo,
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: empresa.direccion.latitud,
+    longitude: empresa.direccion.longitud,
+  },
+  // Solo se declaran los días de apertura confirmados. Los festivos quedan
+  // fuera a propósito: el cliente indicó que suelen abrir, pero no es fijo.
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '08:00',
+      closes: '17:00',
+    },
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Saturday'],
+      opens: '09:00',
+      closes: '14:00',
+    },
+  ],
+  sameAs: [empresa.redes.instagram, empresa.redes.facebook],
+};
+---
+
+<!doctype html>
+<html lang="es-VE">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={`https://metalmotta.com${rutaActual}`} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:locale" content="es_VE" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap&subset=latin,latin-ext"
+      rel="stylesheet"
+    />
+
+    <script type="application/ld+json" set:html={JSON.stringify(datosEstructurados)} />
+
+    <!-- Navegación sin recarga: la cabecera y el pie se mantienen en su sitio
+         mientras el contenido se sustituye, así el cambio de página se lee como
+         un movimiento y no como un corte. -->
+    <ClientRouter />
+  </head>
+
+  <body>
+    <a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+    <!-- Cabecera y pie se sustituyen sin animación: son el marco fijo. Animarlos
+         los haría parpadear en cada navegación. Se re-renderizan igualmente,
+         para que la página activa del menú siga siendo correcta. -->
+    <Cabecera rutaActual={rutaActual} transition:animate="none" />
+
+    <main id="contenido" transition:animate="fade">
+      <slot />
+    </main>
+
+    <PieDePagina transition:animate="none" />
+  </body>
+</html>

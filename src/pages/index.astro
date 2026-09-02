@@ -1,0 +1,387 @@
+---
+import Base from '../plantillas/Base.astro';
+import Icono from '../componentes/Icono.astro';
+import Promociones from '../componentes/Promociones.astro';
+import { empresa, aniosDeTrayectoria, enlaceWhatsApp } from '../datos/empresa.js';
+import { departamentosDestacados, departamentosRestantes } from '../datos/departamentos.js';
+
+const servicios = [
+  {
+    icono: 'asesoria',
+    nombre: 'Asesoría en cualquier producto',
+    detalle: 'Descríbelo o mándanos una foto. Te decimos qué es y qué más te hace falta.',
+  },
+  {
+    icono: 'corte',
+    nombre: 'Corte de material a medida',
+    detalle: 'Te llevas el material listo, en la medida que pide tu trabajo.',
+  },
+  {
+    icono: 'entrega',
+    nombre: 'Entrega a domicilio y a obra',
+    detalle: 'Despachamos donde lo necesites, sin que pares el trabajo.',
+  },
+  {
+    icono: 'cotizacion',
+    nombre: 'Cotizaciones para obra',
+    detalle: 'Pásanos tu lista de materiales y te devolvemos la cotización completa.',
+  },
+];
+---
+
+<Base
+  titulo="Ferretería y maquinaria industrial en Maracaibo"
+  descripcion="Metal Motta: 50 años surtiendo obra, taller y casa en Maracaibo. Doce departamentos, asesoría, corte a medida y entrega a obra. Consulta disponibilidad por WhatsApp."
+  rutaActual="/"
+>
+  <!-- ===== Portada ===== -->
+  <section class="portada">
+    <div class="contenedor portada__interior">
+      <h1 class="portada__titulo">
+        <span class="portada__linea">Ferretería y</span>
+        <span class="portada__linea">maquinaria industrial</span>
+      </h1>
+
+      <p class="portada__entrada">
+        Doce departamentos para obra, taller y casa en Maracaibo. ¿Buscas algo
+        puntual? Escríbenos y te decimos al momento si lo tenemos.
+      </p>
+
+      <div class="portada__acciones">
+        <a
+          class="boton boton--whatsapp"
+          href={enlaceWhatsApp('Hola, quisiera saber si tienen disponible: ')}
+          target="_blank"
+          rel="noopener"
+        >
+          <Icono nombre="whatsapp" tamano={20} />
+          Preguntar por WhatsApp
+        </a>
+        <a class="boton boton--secundario" href="#departamentos">Ver departamentos</a>
+      </div>
+
+      <p class="portada__pie">
+        {aniosDeTrayectoria} años surtiendo a Maracaibo, desde {empresa.anioFundacion}
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== Departamentos ===== -->
+  <section class="seccion" id="departamentos">
+    <div class="contenedor">
+      <h2 class="titulo-seccion">Lo que encuentras aquí</h2>
+      <p class="parrafo-guia">
+        Estos cuatro son los que más se mueven. Abajo está el resto.
+      </p>
+
+      <ul class="destacados">
+        {
+          departamentosDestacados.map((departamento) => (
+            <li class="destacado revelar">
+              <span class="destacado__icono">
+                <Icono nombre={departamento.ruta} tamano={30} />
+              </span>
+              <h3 class="destacado__nombre">{departamento.nombre}</h3>
+              <p class="destacado__resumen">{departamento.resumen}</p>
+              <a
+                class="enlace-accion"
+                href={enlaceWhatsApp(
+                  `Hola, quisiera consultar por productos de ${departamento.nombre}: `
+                )}
+                target="_blank"
+                rel="noopener"
+              >
+                <Icono nombre="whatsapp" tamano={16} />
+                Preguntar por WhatsApp
+                <span class="solo-lectores"> por disponibilidad de {departamento.nombre}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <!-- El resto va en lista densa: son igual de reales, pero se consultan
+           menos y no necesitan el mismo peso visual. -->
+      <ul class="restantes">
+        {
+          departamentosRestantes.map((departamento) => (
+            <li>
+              <a class="restante" href={`/productos#${departamento.ruta}`}>
+                <Icono nombre={departamento.ruta} tamano={20} />
+                {departamento.nombre}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== Servicios ===== -->
+  <section class="seccion seccion--suave">
+    <div class="contenedor">
+      <h2 class="titulo-seccion">No solo despachamos material</h2>
+
+      <ul class="servicios">
+        {
+          servicios.map((servicio) => (
+            <li class="servicio revelar">
+              <Icono nombre={servicio.icono} tamano={26} />
+              <div>
+                <h3 class="servicio__nombre">{servicio.nombre}</h3>
+                <p class="servicio__detalle">{servicio.detalle}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="parrafo-guia">
+        También manejamos precios especiales para contratistas y compras al mayor.
+      </p>
+    </div>
+  </section>
+
+  <!-- Promociones vigentes. La sección se omite por completo si no hay ninguna. -->
+  <Promociones />
+
+  <!-- ===== Formas de pago =====
+       En Venezuela, saber que aceptan Zelle o cripto resuelve una duda real de
+       compra. Merece bloque propio y no una línea perdida en el pie. -->
+  <section class="seccion seccion--oscura">
+    <div class="contenedor">
+      <h2 class="titulo-seccion">Paga como te quede mejor</h2>
+      <ul class="pagos">
+        {empresa.formasDePago.map((forma) => <li class="pago">{forma}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== Trayectoria ===== -->
+  <section class="seccion">
+    <div class="contenedor bloques">
+      <div>
+        <h2 class="titulo-seccion">Medio siglo en el mismo oficio</h2>
+        <p class="parrafo-guia">
+          Metal Motta nació en 1976 de la mano de Mario Maiale, metalúrgico
+          llegado de Benevento, Italia. El nombre viene de Motta, su tierra, y de
+          su oficio. En 1990 sumamos las líneas industriales sin soltar el origen
+          ferretero.
+        </p>
+        <a class="boton boton--secundario" href="/nosotros">Conocer la historia</a>
+      </div>
+
+      <div>
+        <h2 class="titulo-seccion">Dónde estamos</h2>
+        <address class="direccion">
+          {empresa.direccion.calle}<br />
+          {empresa.direccion.referencia}<br />
+          {empresa.direccion.ciudad}, {empresa.direccion.region}
+        </address>
+        <p class="parrafo-guia">
+          Con estacionamiento y patio con galpón, para cargar material pesado sin
+          complicaciones.
+        </p>
+        <a
+          class="boton boton--secundario"
+          href={empresa.direccion.enlaceMapa}
+          target="_blank"
+          rel="noopener"
+        >
+          <Icono nombre="ubicacion" tamano={18} />
+          Cómo llegar
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ===== Portada =====
+     Sin fotografía todavía y sin textura de relleno: la portada se sostiene con
+     tipografía y aire. Cuando lleguen las fotos del local, entra la imagen. */
+  .portada {
+    background-color: var(--color-azul-profundo);
+    color: #fff;
+    padding-block: var(--espacio-2xl);
+  }
+
+  .portada__titulo {
+    font-size: var(--texto-2xl);
+    font-weight: 800;
+  }
+
+  /* Cada línea se descubre de abajo hacia arriba, una tras otra: la persiana
+     del local subiendo. Es el gesto con autoría de la página y no se repite
+     en ninguna otra parte del sitio. */
+  .portada__linea {
+    display: block;
+    animation: santamaria var(--dur-focal) var(--curva) both;
+  }
+
+  .portada__linea:nth-child(2) {
+    animation-delay: 90ms;
+  }
+
+  .portada__entrada {
+    max-width: 46ch;
+    margin-top: var(--espacio-md);
+    font-size: var(--texto-md);
+    color: #c6d6e4;
+    animation: asomar var(--dur-vista) var(--curva) 300ms both;
+  }
+
+  .portada__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-sm);
+    margin-top: var(--espacio-lg);
+    animation: asomar var(--dur-vista) var(--curva) 400ms both;
+  }
+
+  /* La frase va entera con el mismo peso y color: mezclar negrita y redonda
+     dentro de una misma línea parte la lectura. Si algo merece resaltarse, se
+     resalta completo. */
+  .portada__pie {
+    margin-top: var(--espacio-xl);
+    padding-top: var(--espacio-md);
+    border-top: 1px solid rgb(255 255 255 / 18%);
+    font-size: var(--texto-sm);
+    font-weight: 500;
+    color: #c6d6e4;
+    animation: asomar var(--dur-vista) var(--curva) 500ms both;
+  }
+
+  /* ===== Departamentos destacados =====
+     Sin caja: una línea superior los agrupa y el aire hace el resto. Cuatro
+     tarjetas idénticas con borde habrían sido el contenedor perezoso. */
+  .destacados {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: var(--espacio-lg);
+    margin-top: var(--espacio-xl);
+    padding: 0;
+    list-style: none;
+  }
+
+  .destacado {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--espacio-xs);
+    padding-top: var(--espacio-md);
+    border-top: 1px solid var(--color-gris-borde);
+  }
+
+  .destacado__icono {
+    color: var(--color-azul-vivo);
+    margin-bottom: var(--espacio-2xs);
+  }
+
+  .destacado__nombre {
+    font-size: var(--texto-md);
+  }
+
+  .destacado__resumen {
+    flex: 1;
+    font-size: var(--texto-sm);
+    color: var(--color-gris-texto);
+  }
+
+  /* ===== Resto de departamentos ===== */
+  .restantes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--espacio-2xs) var(--espacio-lg);
+    margin-top: var(--espacio-2xl);
+    padding-top: var(--espacio-md);
+    border-top: 1px solid var(--color-gris-borde);
+    list-style: none;
+  }
+
+  .restante {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-sm);
+    min-height: var(--objetivo-tactil);
+    font-size: var(--texto-sm);
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--color-tinta);
+    transition: color var(--transicion);
+  }
+
+  .restante :global(svg) {
+    color: var(--color-gris-texto);
+    transition: color var(--transicion);
+  }
+
+  .restante:hover,
+  .restante:hover :global(svg) {
+    color: var(--color-azul-vivo);
+  }
+
+  /* ===== Servicios ===== */
+  .servicios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--espacio-lg);
+    margin-top: var(--espacio-xl);
+    padding: 0;
+    list-style: none;
+  }
+
+  .servicio {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--espacio-sm);
+    align-items: start;
+    color: var(--color-azul-medio);
+  }
+
+  .servicio__nombre {
+    font-size: var(--texto-base);
+    color: var(--color-tinta);
+  }
+
+  .servicio__detalle {
+    margin-top: var(--espacio-2xs);
+    font-size: var(--texto-sm);
+    color: var(--color-gris-texto);
+  }
+
+  /* ===== Pagos ===== */
+  .pagos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-sm);
+    margin-top: var(--espacio-lg);
+    padding: 0;
+    list-style: none;
+  }
+
+  .pago {
+    padding: var(--espacio-xs) var(--espacio-md);
+    border: 1px solid rgb(255 255 255 / 28%);
+    border-radius: 99px;
+    font-size: var(--texto-sm);
+  }
+
+  /* ===== Bloques finales ===== */
+  .bloques {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--espacio-2xl) var(--espacio-xl);
+  }
+
+  .bloques .boton {
+    margin-top: var(--espacio-lg);
+  }
+
+  .direccion {
+    margin-top: var(--espacio-md);
+    font-style: normal;
+    font-size: var(--texto-md);
+    line-height: 1.7;
+  }
+</style>

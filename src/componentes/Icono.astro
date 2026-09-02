@@ -1,0 +1,80 @@
+---
+// Sistema de iconos del sitio. Todos comparten caja de 24×24, trazo de 1.5 y
+// terminaciones redondeadas, para que se lean como una sola familia.
+//
+// Sustituyen a los códigos numéricos que se usaban antes: la empresa no numera
+// sus departamentos, así que aquel código era decoración disfrazada de dato.
+// Un icono sí aporta reconocimiento rápido, que es lo que hace falta mientras
+// no haya fotografías del local.
+const { nombre, tamano = 24 } = Astro.props;
+
+const trazos = {
+  // Grifo sobre su base
+  plomeria: 'M5 20h14M10 20v-5h4v5M12 15V6m0 0h4a2 2 0 0 1 2 2v2M9 6h6M12 6V4',
+  // Enchufe y corriente
+  electricidad: 'M13 3 5 14h6l-1 7 8-11h-6l1-7Z',
+  // Taladro con broca y mango
+  'herramientas-electricas': 'M3 8h9v5H3V8Zm9 1h3v3h-3M15 10.5h6M6 13v3a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-3',
+  // Muro de bloques
+  construccion: 'M3 5h18v5H3V5Zm0 5v5m0 0h18m-18 0v4h18v-4M9 5v5m6-5v5M6 15v4m6-4v4m6-4v4',
+  // Llave ajustable
+  'herramienta-manual': 'M14.7 6.3a4 4 0 0 0 5 5l-9.4 9.4a2.1 2.1 0 0 1-3-3l9.4-9.4a4 4 0 0 0-5-5l2.6 2.6-1.4 3.5-3.5 1.4L6.7 8.2',
+  // Brocha
+  pinturas: 'M5 3h14v6H5V3Zm2 6v3a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9M12 14v3m0 0a2 2 0 0 0-2 2v2h4v-2a2 2 0 0 0-2-2Z',
+  // Tornillo con cabeza y rosca
+  tornilleria: 'M9 3h6v4H9V3Zm3 4v10m-1.5-7h3m-3 2.5h3m-3 2.5h3M12 21l-1.5-4h3L12 21Z',
+  // Candado
+  cerrajeria: 'M6 11h12v9H6v-9Zm3 0V7a3 3 0 0 1 6 0v4m-3 4v2',
+  // Casco de seguridad
+  'seguridad-industrial': 'M3 17h18a9 9 0 0 0-4-7.5V6a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v3.5A9 9 0 0 0 3 17Zm0 0v2h18v-2M10 4v5m4-5v5',
+  // Tubo de adhesivo
+  adhesivos: 'M9 8h6v11a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2V8Zm1-5h4v5h-4V3Zm2 0V1m-3 11h6',
+  // Planta en maceta
+  jardineria: 'M6 13h12l-1.2 7H7.2L6 13Zm6 0V8m0 0H9.5A3.5 3.5 0 0 1 6 4.5V4h2.5A3.5 3.5 0 0 1 12 7.5V8Zm0 0h1.8A3.2 3.2 0 0 0 17 4.8V4h-1.8A3.2 3.2 0 0 0 12 7.2V8Z',
+  // Caja de herramientas
+  'ferreteria-general': 'M3 9h18v11H3V9Zm5 0V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3M3 14h18M9 12v4m6-4v4',
+
+  // --- Servicios ---
+  asesoria: 'M12 3a9 9 0 0 0-9 9c0 1.6.4 3 1.1 4.3L3 21l4.7-1.1A9 9 0 1 0 12 3Zm-3 8h.01M12 11h.01M15 11h.01',
+  corte: 'M6 4v7m12-7v7M6 11a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm12 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm-9 3h6',
+  entrega: 'M3 7h11v9H3V7Zm11 3h3.5l2.5 3v3h-6m-8 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0Zm10 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0Z',
+  cotizacion: 'M6 3h9l4 4v14H6V3Zm9 0v4h4M9 12h7m-7 4h5m-5-8h3',
+  mayoreo: 'M3 8l4-4h10l4 4M3 8v12h18V8M3 8h18M9 12h6',
+
+  // --- Interfaz ---
+  whatsapp:
+    'M17.5 14.4c-.3-.2-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.4.2-.7 0-.3-.1-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6l.5-.5.3-.5c.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.5 1.9.8 2.7.9 3.6.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4l-.6-.4M12 21a9 9 0 0 1-4.6-1.3L3 21l1.4-4.2A9 9 0 1 1 12 21Z',
+  ubicacion: 'M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Zm0-8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
+  reloj: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-14v5l3 2',
+  flecha: 'M5 12h14m-6-6 6 6-6 6',
+};
+
+const trazo = trazos[nombre];
+---
+
+{
+  trazo && (
+    <svg
+      class="icono"
+      width={tamano}
+      height={tamano}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d={trazo} />
+    </svg>
+  )
+}
+
+<style>
+  .icono {
+    flex-shrink: 0;
+    display: block;
+  }
+</style>

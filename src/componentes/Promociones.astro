@@ -1,0 +1,118 @@
+---
+import { getCollection } from 'astro:content';
+import Icono from './Icono.astro';
+import { enlaceWhatsApp } from '../datos/empresa.js';
+import { filtrarVigentes, aFechaSimple, ZONA_NEGOCIO } from '../utilidades/vigencia.js';
+
+const entradas = await getCollection('promociones');
+
+const vigentes = filtrarVigentes(
+  entradas.map((entrada) => ({ ...entrada.data, id: entrada.id }))
+);
+---
+
+{
+  /* Si no hay promociones vigentes, la sección no existe. Nunca se muestra
+     vacía ni con un "no hay ofertas por ahora", que solo ocuparía espacio. */
+  vigentes.length > 0 && (
+    <section class="seccion seccion--suave" data-promociones>
+      <div class="contenedor">
+        <h2 class="titulo-seccion">Promociones de esta temporada</h2>
+        <p class="parrafo-guia">
+          Precios y disponibilidad se confirman por WhatsApp. Cada promoción
+          deja de mostrarse sola al llegar su fecha de cierre.
+        </p>
+
+        <ul class="promociones">
+          {vigentes.map((promocion) => (
+            <li
+              class="promocion revelar"
+              data-promocion
+              data-fecha-fin={aFechaSimple(promocion.fechaFin)}
+            >
+              <h3 class="promocion__titulo">{promocion.titulo}</h3>
+              <p class="promocion__resumen">{promocion.resumen}</p>
+              <a
+                class="enlace-accion"
+                href={enlaceWhatsApp(
+                  promocion.mensajeWhatsApp ||
+                    `Hola, vi la promoción "${promocion.titulo}" y quisiera preguntar por: `
+                )}
+                target="_blank"
+                rel="noopener"
+              >
+                <Icono nombre="whatsapp" tamano={16} />
+                Preguntar por WhatsApp
+                <span class="solo-lectores"> sobre {promocion.titulo}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<script define:vars={{ zona: ZONA_NEGOCIO }}>
+  // Red de seguridad. El sitio es estático: si nadie lo reconstruye, una
+  // promoción vencida seguiría publicada. Esto la retira en el propio navegador
+  // y, si no queda ninguna vigente, esconde la sección entera.
+  function depurarPromociones() {
+    const seccion = document.querySelector('[data-promociones]');
+    if (!seccion) return;
+
+    const hoy = new Intl.DateTimeFormat('en-CA', {
+      timeZone: zona,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(new Date());
+
+    const tarjetas = [...seccion.querySelectorAll('[data-promocion]')];
+    let quedanVigentes = 0;
+
+    tarjetas.forEach((tarjeta) => {
+      const fin = tarjeta.dataset.fechaFin;
+      if (fin && hoy > fin) {
+        tarjeta.remove();
+        return;
+      }
+      quedanVigentes += 1;
+    });
+
+    if (quedanVigentes === 0) seccion.remove();
+  }
+
+  depurarPromociones();
+  document.addEventListener('astro:page-load', depurarPromociones);
+</script>
+
+<style>
+  .promociones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--espacio-lg);
+    margin-top: var(--espacio-xl);
+    padding: 0;
+    list-style: none;
+  }
+
+  .promocion {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--espacio-xs);
+    padding-top: var(--espacio-md);
+    border-top: 1px solid var(--color-azul-vivo);
+  }
+
+  .promocion__titulo {
+    font-size: var(--texto-md);
+  }
+
+  .promocion__resumen {
+    flex: 1;
+    font-size: var(--texto-sm);
+    color: var(--color-gris-texto);
+  }
+</style>

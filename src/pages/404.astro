@@ -1,0 +1,68 @@
+---
+import Base from '../plantillas/Base.astro';
+import Icono from '../componentes/Icono.astro';
+import { enlaceWhatsApp } from '../datos/empresa.js';
+---
+
+<Base
+  titulo="Página no encontrada"
+  descripcion="La página que buscas no existe. Vuelve al inicio o escríbenos por WhatsApp."
+  rutaActual="/404"
+>
+  <section class="seccion">
+    <div class="contenedor error">
+      <h1 class="error__titulo">Esta página no existe</h1>
+      <p class="parrafo-guia">
+        Puede que el enlace esté mal escrito o que hayamos movido el contenido.
+        Si buscabas un producto, escríbenos y te decimos si lo tenemos.
+      </p>
+
+      <div class="error__acciones">
+        <a
+          class="boton boton--whatsapp"
+          href={enlaceWhatsApp('Hola, quisiera saber si tienen disponible: ')}
+          target="_blank"
+          rel="noopener"
+        >
+          <Icono nombre="whatsapp" tamano={20} />
+          Preguntar por WhatsApp
+        </a>
+        <a class="boton boton--secundario" href="/">Volver al inicio</a>
+      </div>
+
+      <ul class="error__enlaces">
+        <li><a class="enlace-accion" href="/productos">Ver los departamentos</a></li>
+        <li><a class="enlace-accion" href="/ubicacion">Ubicación y horario</a></li>
+        <li><a class="enlace-accion" href="/contacto">Contacto</a></li>
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .error {
+    max-width: 46rem;
+    padding-block: var(--espacio-xl);
+  }
+
+  .error__titulo {
+    font-size: var(--texto-xl);
+  }
+
+  .error__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-sm);
+    margin-top: var(--espacio-lg);
+  }
+
+  .error__enlaces {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacio-lg);
+    margin-top: var(--espacio-xl);
+    padding-top: var(--espacio-md);
+    border-top: 1px solid var(--color-gris-borde);
+    list-style: none;
+  }
+</style>

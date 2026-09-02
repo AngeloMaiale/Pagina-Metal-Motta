@@ -1,0 +1,421 @@
+/* ==========================================================================
+   Metal Motta — Sistema de diseño
+   --------------------------------------------------------------------------
+   Ferretería y maquinaria industrial en Maracaibo, 50 años. El 60 % de la
+   clientela es profesional: oficios y contratistas. El sitio debe leerse con
+   la seriedad de un proveedor de obra, no con la de una tienda de barrio.
+
+   Restricción del cliente: "sin que se vea muy cargada" → mucho aire, pocos
+   elementos por pantalla y una sola acción dominante por sección.
+
+   PROVISIONAL: los azules son una aproximación al logo. Sustituir por los HEX
+   exactos cuando llegue el logotipo vectorial (ver docs/datos-empresa.md).
+   Al cambiarlos, revalidar contraste.
+   ========================================================================== */
+
+:root {
+  /* --- Color ------------------------------------------------------------- */
+  --color-azul-profundo: #0b2c4a;
+  --color-azul-medio: #12507e;
+  --color-azul-vivo: #1a73b8;
+  --color-azul-tenue: #e8f0f7;
+
+  /* Ámbar de señalización industrial. Solo sobre fondo oscuro o como grafismo:
+     sobre blanco no alcanza el contraste mínimo para texto. */
+  --color-ambar: #f5a623;
+
+  /* Verde de WhatsApp con texto azul profundo encima: conserva el color
+     reconocible de la marca y alcanza ~7:1. Con texto blanco daría 2:1. */
+  --color-whatsapp: #25d366;
+  --color-whatsapp-oscuro: #1fbb5a;
+
+  --color-tinta: #10202e;
+  --color-gris-texto: #4a5a6a;
+  --color-gris-borde: #d8dee5;
+  --color-fondo: #ffffff;
+  --color-fondo-suave: #f5f7f9;
+
+  /* --- Tipografía --------------------------------------------------------
+     Dos familias y ninguna más. Archivo para titulares, IBM Plex Sans para
+     todo lo demás. Se retiró la monoespaciada: en horarios y teléfonos
+     desentonaba del resto de la página. Los datos numéricos se alinean con
+     cifras tabulares, que es lo que hacía falta de verdad. */
+  --fuente-titulo: 'Archivo', system-ui, -apple-system, sans-serif;
+  --fuente-cuerpo: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+
+  --texto-xs: 0.78rem;
+  --texto-sm: 0.9rem;
+  --texto-base: 1.0625rem; /* 17px */
+  --texto-md: clamp(1.15rem, 1rem + 0.6vw, 1.35rem);
+  --texto-lg: clamp(1.4rem, 1.1rem + 1.4vw, 2rem);
+  --texto-xl: clamp(1.9rem, 1.3rem + 2.8vw, 3rem);
+  --texto-2xl: clamp(2.4rem, 1.4rem + 4.6vw, 4.5rem);
+
+  /* --- Espaciado --------------------------------------------------------- */
+  --espacio-2xs: 0.25rem;
+  --espacio-xs: 0.5rem;
+  --espacio-sm: 0.75rem;
+  --espacio-md: 1.25rem;
+  --espacio-lg: 2rem;
+  --espacio-xl: 3rem;
+  --espacio-2xl: clamp(3.5rem, 8vw, 6.5rem);
+
+  /* --- Medidas ----------------------------------------------------------- */
+  --ancho-contenido: 1180px;
+  --ancho-texto: 68ch;
+  --radio: 10px;
+  --borde: 1px solid var(--color-gris-borde);
+
+  /* Objetivo táctil. WCAG 2.2 pide 24px; usamos 44px porque el público
+     manipula el teléfono en obra, a menudo con guantes. */
+  --objetivo-tactil: 44px;
+
+  /* --- Movimiento ---------------------------------------------------------
+     Una sola curva de llegada para todo el sitio: deceleración firme, sin
+     rebote. Las salidas van más rápidas que las entradas, porque esperar a que
+     algo se vaya se siente como lentitud. */
+  --curva: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-feedback: 130ms;
+  --dur-estado: 220ms;
+  --dur-vista: 380ms;
+  --dur-focal: 700ms;
+
+  --transicion: var(--dur-feedback) var(--curva);
+}
+
+/* --- Reajuste base ------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Permite animar alturas hacia 'auto' (menú y acordeón). Donde no se admite,
+     el cambio ocurre igual, solo que sin recorrido. */
+  interpolate-size: allow-keywords;
+  /* Superficies que el navegador pinta y que también forman parte del diseño */
+  caret-color: var(--color-azul-vivo);
+  scrollbar-color: var(--color-gris-borde) transparent;
+  scrollbar-width: thin;
+}
+
+body {
+  font-family: var(--fuente-cuerpo);
+  font-size: var(--texto-base);
+  line-height: 1.6;
+  color: var(--color-tinta);
+  background-color: var(--color-fondo);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-azul-vivo);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-fondo-suave);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gris-borde);
+  border: 3px solid var(--color-fondo-suave);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gris-texto);
+}
+
+img,
+picture,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+/* --- Accesibilidad ------------------------------------------------------- */
+
+:focus-visible {
+  outline: 3px solid var(--color-ambar);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.salto-contenido {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: var(--espacio-sm) var(--espacio-md);
+  background: var(--color-azul-profundo);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.salto-contenido:focus {
+  left: var(--espacio-md);
+  top: var(--espacio-md);
+}
+
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Movimiento ----------------------------------------------------------
+   Momento focal: el título de la portada se descubre de abajo hacia arriba,
+   como la santamaría de un local que se levanta al abrir. Es el único gesto
+   con autoría del sitio; el resto del movimiento sirve para dar continuidad o
+   confirmar una acción. */
+
+@keyframes santamaria {
+  from {
+    clip-path: inset(105% 0 0 0);
+    transform: translateY(0.16em);
+  }
+  to {
+    clip-path: inset(-20% 0 0 0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes asomar {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Revelado de listas al entrar en pantalla.
+   Va con animación ligada al scroll, sin JavaScript. El contenido está visible
+   por defecto y solo se anima donde el navegador lo admite: así ningún fallo de
+   script o viewport puede dejar los departamentos invisibles. Donde no hay
+   soporte (Safari, entre otros), la lista simplemente aparece ya puesta. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .revelar {
+      animation: asomar linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 20%;
+    }
+  }
+}
+
+/* Transición entre páginas: el contenido entra, el anterior se va antes. */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: asomar var(--dur-estado) var(--curva) reverse;
+}
+
+::view-transition-new(root) {
+  animation: asomar var(--dur-vista) var(--curva);
+}
+
+/* Movimiento reducido: se retira el desplazamiento espacial, no el sentido.
+   Las cosas siguen apareciendo y confirmando acciones, pero sin viajar. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  @keyframes santamaria {
+    from {
+      opacity: 0;
+      clip-path: none;
+    }
+    to {
+      opacity: 1;
+      clip-path: none;
+    }
+  }
+
+  @keyframes asomar {
+    from {
+      opacity: 0;
+      transform: none;
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: var(--dur-estado) !important;
+    transition-duration: var(--dur-feedback) !important;
+  }
+}
+
+/* --- Estructura ---------------------------------------------------------- */
+
+.contenedor {
+  width: 100%;
+  max-width: var(--ancho-contenido);
+  margin-inline: auto;
+  padding-inline: var(--espacio-md);
+}
+
+.seccion {
+  padding-block: var(--espacio-2xl);
+}
+
+.seccion--suave {
+  background-color: var(--color-fondo-suave);
+}
+
+.seccion--oscura {
+  background-color: var(--color-azul-profundo);
+  color: #fff;
+}
+
+/* --- Tipografía de sección ----------------------------------------------
+   Sin etiqueta superior: el título carga su propio peso. Una palabra en
+   versalitas encima de un titular que ya dice lo mismo es ruido. */
+
+.titulo-seccion {
+  font-size: var(--texto-lg);
+  max-width: 22ch;
+}
+
+.parrafo-guia {
+  max-width: var(--ancho-texto);
+  color: var(--color-gris-texto);
+  font-size: var(--texto-md);
+  margin-top: var(--espacio-md);
+}
+
+.seccion--oscura .parrafo-guia {
+  color: #c6d6e4;
+}
+
+/* Valores numéricos: misma familia que el resto, con cifras de ancho fijo para
+   que los horarios queden alineados en columna. */
+.dato {
+  font-size: var(--texto-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Botones ------------------------------------------------------------- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-xs);
+  min-height: var(--objetivo-tactil);
+  padding: var(--espacio-sm) var(--espacio-lg);
+  border: 2px solid transparent;
+  border-radius: var(--radio);
+  font-family: var(--fuente-cuerpo);
+  font-size: var(--texto-base);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--transicion), border-color var(--transicion),
+    box-shadow var(--transicion);
+}
+
+.boton--whatsapp {
+  background-color: var(--color-whatsapp);
+  color: var(--color-azul-profundo);
+}
+
+.boton--whatsapp:hover {
+  background-color: var(--color-whatsapp-oscuro);
+  box-shadow: 0 6px 18px -6px rgb(11 44 74 / 45%);
+}
+
+.boton--secundario {
+  background-color: transparent;
+  border-color: currentColor;
+}
+
+.boton--secundario:hover {
+  background-color: rgb(11 44 74 / 6%);
+}
+
+.seccion--oscura .boton--secundario:hover,
+.portada .boton--secundario:hover {
+  background-color: rgb(255 255 255 / 12%);
+}
+
+/* Enlace de acción. Lleva el icono de WhatsApp delante del texto porque el
+   destino es una conversación, no una página del sitio: sin esa marca, un
+   "Consultar" a secas hace pensar que hay catálogo aquí dentro. */
+.enlace-accion {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-xs);
+  min-height: var(--objetivo-tactil);
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  color: var(--color-azul-medio);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+  text-decoration-color: rgb(18 80 126 / 35%);
+  transition: text-decoration-color var(--transicion);
+}
+
+.enlace-accion:hover {
+  text-decoration-color: currentColor;
+}

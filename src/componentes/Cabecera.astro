@@ -1,0 +1,342 @@
+---
+import { empresa, enlaceWhatsApp } from '../datos/empresa.js';
+import EstadoHorario from './EstadoHorario.astro';
+import Icono from './Icono.astro';
+
+const { rutaActual } = Astro.props;
+
+const enlaces = [
+  { texto: 'Inicio', ruta: '/' },
+  { texto: 'Productos', ruta: '/productos' },
+  { texto: 'Servicios', ruta: '/servicios' },
+  { texto: 'Nosotros', ruta: '/nosotros' },
+  { texto: 'Ubicación', ruta: '/ubicacion' },
+  { texto: 'Contacto', ruta: '/contacto' },
+];
+---
+
+<header class="cabecera">
+  <!-- Barra superior: el estado de apertura es el dato que más se consulta -->
+  <div class="cabecera__barra">
+    <div class="contenedor cabecera__barra-interior">
+      <EstadoHorario compacto={true} />
+      <span class="cabecera__ciudad">Maracaibo, Zulia</span>
+    </div>
+  </div>
+
+  <!-- Solo esta fila queda fija al hacer scroll, y lleva el acceso a WhatsApp -->
+  <div class="cabecera__principal">
+    <div class="contenedor cabecera__interior">
+      <a href="/" class="marca" aria-label={`${empresa.nombreComercial}, ir al inicio`}>
+        <!-- PROVISIONAL: marca tipográfica hasta recibir el logotipo vectorial -->
+        <span class="marca__nombre">Metal Motta</span>
+        <span class="marca__descriptor">Ferretería y maquinarias</span>
+      </a>
+
+      <button
+        class="cabecera__alternar"
+        type="button"
+        aria-expanded="false"
+        aria-controls="navegacion-principal"
+        data-alternar-menu
+      >
+        <span class="solo-lectores">Abrir menú</span>
+        <span class="cabecera__icono" aria-hidden="true"></span>
+      </button>
+
+      <nav id="navegacion-principal" class="navegacion" data-menu aria-label="Navegación principal">
+        <ul class="navegacion__lista">
+          {
+            enlaces.map(({ texto, ruta }) => (
+              <li>
+                <a
+                  href={ruta}
+                  class="navegacion__enlace"
+                  aria-current={rutaActual === ruta ? 'page' : undefined}
+                >
+                  {texto}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <a
+        class="boton boton--whatsapp cabecera__accion"
+        href={enlaceWhatsApp('Hola, quisiera hacer una consulta.')}
+        target="_blank"
+        rel="noopener"
+      >
+        <Icono nombre="whatsapp" tamano={18} />
+        <span class="cabecera__accion-texto">WhatsApp</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Se vuelve a enlazar en cada navegación: con transiciones de vista la
+  // cabecera se sustituye, así que los oyentes del documento anterior ya no
+  // apuntan a estos elementos.
+  function activarMenu() {
+    const boton = document.querySelector('[data-alternar-menu]');
+    const menu = document.querySelector('[data-menu]');
+    if (!boton || !menu) return;
+
+    // Marca de enlazado: en la carga inicial esta función se invoca dos veces
+    // (llamada directa y astro:page-load). Sin la marca quedaban dos oyentes
+    // de clic, y el segundo cerraba el menú que el primero acababa de abrir.
+    if (boton.dataset.enlazado) return;
+    boton.dataset.enlazado = '1';
+
+    const rotulo = boton.querySelector('.solo-lectores');
+
+    function cerrarMenu() {
+      boton.setAttribute('aria-expanded', 'false');
+      if (rotulo) rotulo.textContent = 'Abrir menú';
+      menu.classList.remove('navegacion--visible');
+    }
+
+    boton.addEventListener('click', () => {
+      if (boton.getAttribute('aria-expanded') === 'true') {
+        cerrarMenu();
+        return;
+      }
+      boton.setAttribute('aria-expanded', 'true');
+      if (rotulo) rotulo.textContent = 'Cerrar menú';
+      menu.classList.add('navegacion--visible');
+    });
+
+    // Salida de emergencia: Escape cierra el menú y devuelve el foco al botón.
+    document.addEventListener('keydown', (evento) => {
+      if (evento.key === 'Escape' && boton.getAttribute('aria-expanded') === 'true') {
+        cerrarMenu();
+        boton.focus();
+      }
+    });
+
+    // Al elegir un destino, el menú se cierra solo.
+    menu.addEventListener('click', (evento) => {
+      if (evento.target.closest('a')) cerrarMenu();
+    });
+  }
+
+  activarMenu();
+  document.addEventListener('astro:page-load', activarMenu);
+</script>
+
+<style>
+  .cabecera__barra {
+    background-color: var(--color-azul-profundo);
+    color: #fff;
+  }
+
+  .cabecera__barra-interior {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espacio-md);
+    min-height: 34px;
+  }
+
+  .cabecera__ciudad {
+    font-size: var(--texto-xs);
+    color: #9fb6c9;
+  }
+
+  .cabecera__principal {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: var(--color-fondo);
+    border-bottom: var(--borde);
+  }
+
+  .cabecera__interior {
+    display: flex;
+    align-items: center;
+    gap: var(--espacio-md);
+    padding-block: var(--espacio-sm);
+  }
+
+  /* --- Marca --- */
+  .marca {
+    text-decoration: none;
+    margin-right: auto;
+    line-height: 1.1;
+  }
+
+  .marca__nombre {
+    display: block;
+    font-family: var(--fuente-titulo);
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: -0.03em;
+    color: var(--color-azul-profundo);
+  }
+
+  .marca__descriptor {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    color: var(--color-gris-texto);
+  }
+
+  /* --- Navegación --- */
+  .navegacion__lista {
+    display: flex;
+    gap: var(--espacio-md);
+    list-style: none;
+    padding: 0;
+  }
+
+  .navegacion__enlace {
+    display: flex;
+    align-items: center;
+    min-height: var(--objetivo-tactil);
+    font-size: var(--texto-sm);
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--color-tinta);
+    border-bottom: 2px solid transparent;
+    transition: color var(--transicion), border-color var(--transicion);
+  }
+
+  .navegacion__enlace:hover {
+    color: var(--color-azul-vivo);
+    border-bottom-color: var(--color-gris-borde);
+  }
+
+  .navegacion__enlace[aria-current='page'] {
+    border-bottom-color: var(--color-azul-vivo);
+  }
+
+  /* --- Botón de menú (solo móvil) --- */
+  .cabecera__alternar {
+    display: none;
+    width: var(--objetivo-tactil);
+    height: var(--objetivo-tactil);
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: var(--borde);
+    border-radius: var(--radio);
+    cursor: pointer;
+    order: 3;
+  }
+
+  .cabecera__icono,
+  .cabecera__icono::before,
+  .cabecera__icono::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: var(--color-tinta);
+    transition: transform var(--transicion);
+  }
+
+  .cabecera__icono::before,
+  .cabecera__icono::after {
+    content: '';
+    position: absolute;
+  }
+
+  .cabecera__icono::before {
+    transform: translateY(-6px);
+  }
+
+  .cabecera__icono::after {
+    transform: translateY(6px);
+  }
+
+  /* El botón se convierte en aspa cuando el menú está abierto */
+  [aria-expanded='true'] .cabecera__icono {
+    background-color: transparent;
+  }
+
+  [aria-expanded='true'] .cabecera__icono::before {
+    transform: rotate(45deg);
+  }
+
+  [aria-expanded='true'] .cabecera__icono::after {
+    transform: rotate(-45deg);
+  }
+
+  @media (max-width: 900px) {
+    .cabecera__alternar {
+      display: flex;
+    }
+
+    /* El menú se despliega en lugar de aparecer de golpe. La rejilla de 0fr a
+       1fr permite animar hasta la altura real sin fijarla a mano.
+       `visibility` se retrasa al cerrar para que el contenido no desaparezca
+       antes de terminar el recorrido, y evita que los enlaces reciban foco
+       mientras el menú está cerrado. */
+    .navegacion {
+      display: grid;
+      grid-template-rows: 0fr;
+      visibility: hidden;
+      order: 4;
+      width: 100%;
+      transition: grid-template-rows var(--dur-estado) var(--curva),
+        visibility 0s linear var(--dur-estado);
+    }
+
+    .navegacion--visible {
+      grid-template-rows: 1fr;
+      visibility: visible;
+      transition: grid-template-rows var(--dur-estado) var(--curva), visibility 0s;
+    }
+
+    .navegacion__lista {
+      flex-direction: column;
+      gap: 0;
+      padding-block: 0;
+      overflow: hidden;
+    }
+
+    .navegacion--visible .navegacion__lista {
+      padding-block: var(--espacio-xs);
+    }
+
+    .navegacion__enlace {
+      border-bottom: var(--borde);
+      border-left: 2px solid transparent;
+      padding-inline: var(--espacio-xs);
+    }
+
+    .navegacion__enlace[aria-current='page'] {
+      border-left-color: var(--color-azul-vivo);
+      border-bottom-color: var(--color-gris-borde);
+    }
+
+    .cabecera__interior {
+      flex-wrap: wrap;
+    }
+  }
+
+  /* En pantallas estrechas la cabecera cabe en una fila: se retiran el
+     descriptor y la ciudad, que son contexto. WhatsApp nunca se retira. */
+  @media (max-width: 560px) {
+    .cabecera__ciudad,
+    .marca__descriptor {
+      display: none;
+    }
+
+    .marca__nombre {
+      font-size: 1.25rem;
+    }
+
+    .cabecera__accion {
+      padding-inline: var(--espacio-md);
+      font-size: var(--texto-sm);
+    }
+  }
+
+  @media (max-width: 380px) {
+    .cabecera__accion-texto {
+      display: none;
+    }
+  }
+</style>

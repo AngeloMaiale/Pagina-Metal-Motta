@@ -1,0 +1,136 @@
+---
+import Base from '../plantillas/Base.astro';
+import EncabezadoPagina from '../componentes/EncabezadoPagina.astro';
+import { empresa, aniosDeTrayectoria } from '../datos/empresa.js';
+
+// La secuencia de nombres es real y está documentada: cada cambio corresponde a
+// una ampliación del negocio. Por eso va numerada — el orden es la información.
+const hitos = [
+  {
+    anio: '1976',
+    nombre: 'Metal Motta S.R.L.',
+    detalle:
+      'Mario Maiale, metalúrgico llegado de Benevento, Italia, abre en Maracaibo un negocio de artículos básicos de ferretería y herrería. El nombre junta su oficio con Motta, el sector de su tierra natal.',
+  },
+  {
+    anio: 'Años 80',
+    nombre: 'Materiales Metal Motta C.A.',
+    detalle:
+      'La sede se amplía y entran nuevas líneas de producto. El negocio deja de ser solo un local de barrio.',
+  },
+  {
+    anio: '1990',
+    nombre: 'Ferretería y Maquinarias Metal Motta S.A.',
+    detalle:
+      'Se integran las líneas industriales sin abandonar el origen ferretero. Es el nombre que llevamos hoy.',
+  },
+];
+---
+
+<Base
+  titulo="Nosotros"
+  descripcion="Metal Motta nació en 1976 en Maracaibo de la mano de Mario Maiale, metalúrgico italiano. 50 años surtiendo ferretería y maquinaria industrial."
+  rutaActual="/nosotros"
+>
+  <EncabezadoPagina
+    titulo="Medio siglo en el mismo oficio"
+    entrada={`${aniosDeTrayectoria} años en Maracaibo, tres nombres y un mismo negocio: resolverle el trabajo a quien entra por la puerta.`}
+  />
+
+  <section class="seccion">
+    <div class="contenedor">
+      <h2 class="titulo-seccion">Cómo llegamos hasta aquí</h2>
+      <ol class="hitos">
+        {
+          hitos.map((hito) => (
+            <li class="hito revelar">
+              <span class="hito__anio">{hito.anio}</span>
+              <div>
+                <h2 class="hito__nombre">{hito.nombre}</h2>
+                <p class="hito__detalle">{hito.detalle}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="seccion seccion--oscura">
+    <div class="contenedor proposito">
+      <div>
+        <h2 class="proposito__titulo">Misión</h2>
+        <p class="proposito__texto">
+          Asesorar a nuestros clientes con una amplia gama de productos de
+          ferretería de primera calidad que sean asequibles.
+        </p>
+      </div>
+      <div>
+        <h2 class="proposito__titulo">Visión</h2>
+        <p class="proposito__texto">
+          Servir mejor a nuestros clientes de manera responsable, creando así una
+          relación duradera.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hitos {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--espacio-xl);
+    display: grid;
+    gap: var(--espacio-xl);
+  }
+
+  .hito {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: var(--espacio-lg);
+    padding-top: var(--espacio-md);
+    border-top: 1px solid var(--color-gris-borde);
+  }
+
+  .hito__anio {
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    color: var(--color-azul-vivo);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .proposito__titulo {
+    font-size: var(--texto-md);
+    margin-bottom: var(--espacio-sm);
+  }
+
+  .hito__nombre {
+    font-size: var(--texto-md);
+  }
+
+  .hito__detalle {
+    max-width: var(--ancho-texto);
+    margin-top: var(--espacio-xs);
+    color: var(--color-gris-texto);
+  }
+
+  .proposito {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--espacio-xl);
+  }
+
+  .proposito__texto {
+    font-size: var(--texto-md);
+    max-width: 38ch;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  @media (max-width: 600px) {
+    .hito {
+      grid-template-columns: 1fr;
+      gap: var(--espacio-xs);
+    }
+  }
+</style>

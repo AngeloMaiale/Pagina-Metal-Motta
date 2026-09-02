@@ -1,0 +1,126 @@
+---
+import Base from '../plantillas/Base.astro';
+import EncabezadoPagina from '../componentes/EncabezadoPagina.astro';
+import Icono from '../componentes/Icono.astro';
+import { enlaceWhatsApp } from '../datos/empresa.js';
+
+// PENDIENTE: falta confirmar con el cliente qué materiales se cortan a medida y
+// el costo y la cobertura de la entrega a domicilio (ver docs/datos-empresa.md).
+const servicios = [
+  {
+    icono: 'asesoria',
+    nombre: 'Asesoría en cualquier producto',
+    detalle:
+      'Es lo que mejor hacemos. Si no sabes qué pieza necesitas, descríbela, tráela o mándanos una foto: te decimos qué es, para qué sirve y qué más te hace falta para terminar el trabajo.',
+    accion: 'Hola, necesito asesoría sobre un producto: ',
+  },
+  {
+    icono: 'corte',
+    nombre: 'Corte de material a medida',
+    detalle:
+      'Te llevas el material en la medida exacta que pide tu trabajo, sin desperdicio y sin tener que cortarlo tú.',
+    accion: 'Hola, quisiera saber si pueden cortar un material a medida: ',
+  },
+  {
+    icono: 'entrega',
+    nombre: 'Entrega a domicilio y a obra',
+    detalle:
+      'Despachamos el pedido donde lo necesites. Escríbenos con la dirección y el listado para coordinar la entrega.',
+    accion: 'Hola, quisiera coordinar una entrega. La dirección es: ',
+  },
+  {
+    icono: 'cotizacion',
+    nombre: 'Cotizaciones para obra',
+    detalle:
+      'Pásanos tu lista de materiales y te devolvemos la cotización completa. Mientras más detallada la lista, más rápido respondemos.',
+    accion: 'Hola, quisiera una cotización para una obra. Les paso la lista: ',
+  },
+  {
+    icono: 'mayoreo',
+    nombre: 'Precios para contratistas y mayor',
+    detalle:
+      'Si compras por volumen o trabajas en obra de forma constante, manejamos condiciones distintas a las de mostrador.',
+    accion: 'Hola, trabajo en obra y quisiera consultar precios al mayor.',
+  },
+];
+---
+
+<Base
+  titulo="Servicios"
+  descripcion="Asesoría técnica, corte de material a medida, entrega a obra, cotizaciones y precios para contratistas en Maracaibo."
+  rutaActual="/servicios"
+>
+  <EncabezadoPagina
+    titulo="No solo despachamos material"
+    entrada="Medio siglo atendiendo obra, taller y casa nos dejó algo más que inventario: sabemos qué necesitas aunque no sepas cómo se llama."
+  />
+
+  <section class="seccion">
+    <div class="contenedor">
+      <ul class="servicios">
+        {
+          servicios.map((servicio) => (
+            <li class="servicio revelar">
+              <span class="servicio__icono">
+                <Icono nombre={servicio.icono} tamano={30} />
+              </span>
+              <div class="servicio__cuerpo">
+                <h2 class="servicio__nombre">{servicio.nombre}</h2>
+                <p class="servicio__detalle">{servicio.detalle}</p>
+                <a
+                  class="enlace-accion"
+                  href={enlaceWhatsApp(servicio.accion)}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <Icono nombre="whatsapp" tamano={16} />
+                  Escribir por WhatsApp
+                  <span class="solo-lectores"> sobre {servicio.nombre}</span>
+                </a>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .servicios {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--espacio-xl);
+  }
+
+  .servicio {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--espacio-md);
+    padding-top: var(--espacio-md);
+    border-top: 1px solid var(--color-gris-borde);
+  }
+
+  .servicio__icono {
+    color: var(--color-azul-vivo);
+  }
+
+  .servicio__nombre {
+    font-size: var(--texto-lg);
+    max-width: 20ch;
+  }
+
+  .servicio__detalle {
+    max-width: var(--ancho-texto);
+    margin-top: var(--espacio-sm);
+    color: var(--color-gris-texto);
+  }
+
+  @media (max-width: 600px) {
+    .servicio {
+      grid-template-columns: 1fr;
+      gap: var(--espacio-xs);
+    }
+  }
+</style>

@@ -1,0 +1,109 @@
+---
+import Base from '../plantillas/Base.astro';
+import EncabezadoPagina from '../componentes/EncabezadoPagina.astro';
+import Icono from '../componentes/Icono.astro';
+import { enlaceWhatsApp } from '../datos/empresa.js';
+import { departamentos } from '../datos/departamentos.js';
+---
+
+<Base
+  titulo="Productos y departamentos"
+  descripcion="Los doce departamentos de Metal Motta en Maracaibo: plomería, electricidad, herramientas, construcción, pinturas y más. Pregunta disponibilidad por WhatsApp."
+  rutaActual="/productos"
+>
+  <EncabezadoPagina
+    titulo="Doce departamentos bajo un mismo techo"
+    entrada="No publicamos precios porque cambian seguido. Escríbenos por WhatsApp y te confirmamos disponibilidad y precio del día."
+  />
+
+  <section class="seccion">
+    <div class="contenedor">
+      <ul class="departamentos">
+        {
+          departamentos.map((departamento) => (
+            <li class="departamento revelar" id={departamento.ruta}>
+              <span class="departamento__icono">
+                <Icono nombre={departamento.ruta} tamano={28} />
+              </span>
+              <h2 class="departamento__nombre">{departamento.nombre}</h2>
+              <p class="departamento__resumen">{departamento.resumen}</p>
+              <a
+                class="enlace-accion"
+                href={enlaceWhatsApp(
+                  `Hola, quisiera consultar por productos de ${departamento.nombre}: `
+                )}
+                target="_blank"
+                rel="noopener"
+              >
+                <Icono nombre="whatsapp" tamano={16} />
+                Preguntar por WhatsApp
+                <span class="solo-lectores"> por disponibilidad de {departamento.nombre}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="seccion seccion--suave">
+    <div class="contenedor">
+      <h2 class="titulo-seccion">¿No encuentras lo que buscas?</h2>
+      <p class="parrafo-guia">
+        Manejamos mucho más de lo que cabe en esta lista. Si no sabes cómo se
+        llama la pieza, mándanos una foto por WhatsApp y la identificamos.
+      </p>
+      <a
+        class="boton boton--whatsapp"
+        href={enlaceWhatsApp(
+          'Hola, estoy buscando un producto y no sé cómo se llama. Les mando una foto.'
+        )}
+        target="_blank"
+        rel="noopener"
+      >
+        <Icono nombre="whatsapp" tamano={20} />
+        Mandar una foto por WhatsApp
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .departamentos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--espacio-xl) var(--espacio-lg);
+    padding: 0;
+    list-style: none;
+  }
+
+  .departamento {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--espacio-xs);
+    padding-top: var(--espacio-md);
+    border-top: 1px solid var(--color-gris-borde);
+    /* Compensa la cabecera fija al saltar a un ancla */
+    scroll-margin-top: 90px;
+  }
+
+  .departamento__icono {
+    color: var(--color-azul-vivo);
+    margin-bottom: var(--espacio-2xs);
+  }
+
+  .departamento__nombre {
+    font-size: var(--texto-md);
+  }
+
+  .departamento__resumen {
+    flex: 1;
+    font-size: var(--texto-sm);
+    color: var(--color-gris-texto);
+  }
+
+  .seccion--suave .boton {
+    margin-top: var(--espacio-lg);
+  }
+</style>

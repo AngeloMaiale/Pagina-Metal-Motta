@@ -1,0 +1,34 @@
+# Dependencias
+node_modules/
+
+# Resultado de la compilación
+dist/
+.astro/
+
+# Grafo del proyecto: se regenera con `graphify update .`
+graphify-out/
+
+# Skills instaladas con `npx skills`: se reinstalan desde skills-lock.json
+.agents/
+agent/
+.claude/skills/
+
+# Entorno
+.env
+.env.production
+*.local
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+
+# Registros
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

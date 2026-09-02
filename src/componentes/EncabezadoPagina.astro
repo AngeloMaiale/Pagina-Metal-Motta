@@ -1,0 +1,32 @@
+---
+// Encabezado de las páginas internas. Sin etiqueta superior: el título dice lo
+// que hay que decir y una palabra en versalitas encima solo lo repetía.
+const { titulo, entrada } = Astro.props;
+---
+
+<section class="encabezado">
+  <div class="contenedor">
+    <h1 class="encabezado__titulo">{titulo}</h1>
+    {entrada && <p class="encabezado__entrada">{entrada}</p>}
+  </div>
+</section>
+
+<style>
+  .encabezado {
+    background-color: var(--color-azul-profundo);
+    color: #fff;
+    padding-block: var(--espacio-xl);
+  }
+
+  .encabezado__titulo {
+    font-size: var(--texto-xl);
+    max-width: 20ch;
+  }
+
+  .encabezado__entrada {
+    max-width: 54ch;
+    margin-top: var(--espacio-md);
+    font-size: var(--texto-md);
+    color: #c6d6e4;
+  }
+</style>

@@ -1,0 +1,220 @@
+---
+import Base from '../plantillas/Base.astro';
+import EncabezadoPagina from '../componentes/EncabezadoPagina.astro';
+import { empresa, enlaceWhatsApp } from '../datos/empresa.js';
+
+// Preguntas tomadas de lo que el cliente reporta que más le consultan.
+const preguntasFrecuentes = [
+  {
+    pregunta: '¿Tienen disponible este producto?',
+    respuesta:
+      'Escríbenos por WhatsApp con el nombre del producto —o una foto, si no sabes cómo se llama— y te confirmamos disponibilidad y precio del día.',
+  },
+  {
+    pregunta: '¿Cuál es el horario?',
+    respuesta:
+      'Lunes a viernes de 8:00 a 17:00 y sábados de 9:00 a 14:00. Los domingos no abrimos. En días festivos solemos abrir, pero conviene que escribas antes de venir.',
+  },
+  {
+    pregunta: '¿Publican precios en la página?',
+    respuesta:
+      'No. Los precios cambian con frecuencia y es mas conveniente dar los precios por Whatsapp',
+  },
+  {
+    pregunta: '¿Cómo puedo pagar?',
+    respuesta:
+      'Aceptamos efectivo, tarjeta de débito y crédito, transferencia, Zelle y criptomonedas. A clientes frecuentes también les manejamos crédito.',
+  },
+  {
+    pregunta: '¿Hacen entregas?',
+    respuesta:
+      'Sí, entregamos a domicilio y a obra. Escríbenos con la dirección y el listado de materiales para coordinar.',
+  },
+  {
+    pregunta: '¿Manejan precios especiales para obra?',
+    respuesta:
+      'Sí. Si compras por volumen o trabajas en obra de forma constante, tenemos condiciones distintas a las de mostrador.',
+  },
+];
+---
+
+<Base
+  titulo="Contacto"
+  descripcion="Escríbenos por WhatsApp al +58 424-6688201 o al correo contactometalmotta@gmail.com. Consulta disponibilidad, precios y entregas."
+  rutaActual="/contacto"
+>
+  <EncabezadoPagina
+    titulo="Escríbenos y te respondemos"
+    entrada="La vía más rápida es WhatsApp. Si buscas algo puntual, mándanos el nombre o una foto y te decimos al momento si lo tenemos."
+  />
+
+  <section class="seccion">
+    <div class="contenedor">
+      <ul class="canales">
+        <li class="canal canal--principal">
+          <h2 class="canal__nombre">WhatsApp</h2>
+          <p class="canal__dato dato">{empresa.contacto.whatsappVisible}</p>
+          <p class="canal__nota">La vía más rápida. Respondemos en horario de tienda.</p>
+          <a
+            class="boton boton--whatsapp"
+            href={enlaceWhatsApp('Hola, quisiera hacer una consulta: ')}
+            target="_blank"
+            rel="noopener"
+          >
+            Abrir conversación
+          </a>
+        </li>
+
+        <li class="canal">
+          <h2 class="canal__nombre">Correo</h2>
+          <a class="canal__enlace" href={`mailto:${empresa.contacto.correo}`}>
+            {empresa.contacto.correo}
+          </a>
+          <p class="canal__nota">Para cotizaciones extensas y documentos.</p>
+        </li>
+
+        <li class="canal">
+          <h2 class="canal__nombre">Redes</h2>
+          <a class="canal__enlace" href={empresa.redes.instagram} target="_blank" rel="noopener">
+            Instagram
+          </a>
+          <a class="canal__enlace" href={empresa.redes.facebook} target="_blank" rel="noopener">
+            Facebook
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="seccion seccion--suave">
+    <div class="contenedor">
+      <h2 class="titulo-seccion">Lo que más nos preguntan</h2>
+
+      <div class="preguntas">
+        {
+          preguntasFrecuentes.map((elemento) => (
+            <details class="pregunta">
+              <summary class="pregunta__titulo">{elemento.pregunta}</summary>
+              <p class="pregunta__respuesta">{elemento.respuesta}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .canales {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--espacio-lg);
+    padding: 0;
+    list-style: none;
+  }
+
+  .canal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--espacio-2xs);
+    padding-top: var(--espacio-md);
+    border-top: 1px solid var(--color-gris-borde);
+  }
+
+  .canal--principal {
+    border-top-color: var(--color-azul-vivo);
+  }
+
+  .canal__nombre {
+    font-size: var(--texto-md);
+  }
+
+  .canal__dato {
+    font-size: var(--texto-sm);
+    color: var(--color-gris-texto);
+  }
+
+  .canal__enlace {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--objetivo-tactil);
+    font-size: var(--texto-sm);
+    font-weight: 600;
+    color: var(--color-azul-medio);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    word-break: break-word;
+  }
+
+  .canal__nota {
+    font-size: var(--texto-sm);
+    color: var(--color-gris-texto);
+  }
+
+  .canal .boton {
+    margin-top: var(--espacio-sm);
+  }
+
+  /* --- Preguntas frecuentes --- */
+  .preguntas {
+    margin-top: var(--espacio-lg);
+    border-top: var(--borde);
+  }
+
+  .pregunta {
+    border-bottom: var(--borde);
+  }
+
+  .pregunta__titulo {
+    display: flex;
+    align-items: center;
+    min-height: var(--objetivo-tactil);
+    padding-block: var(--espacio-sm);
+    font-family: var(--fuente-titulo);
+    font-size: var(--texto-base);
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .pregunta__titulo::-webkit-details-marker {
+    display: none;
+  }
+
+  .pregunta__titulo::after {
+    content: '+';
+    margin-left: auto;
+    padding-left: var(--espacio-md);
+    font-size: var(--texto-md);
+    font-weight: 400;
+    color: var(--color-azul-vivo);
+  }
+
+  .pregunta[open] .pregunta__titulo::after {
+    content: '−';
+  }
+
+  .pregunta__titulo:hover {
+    color: var(--color-azul-medio);
+  }
+
+  /* La respuesta se despliega en lugar de saltar. Donde el navegador no admite
+     animar ::details-content, la respuesta aparece igual, sin recorrido. */
+  .pregunta::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size var(--dur-estado) var(--curva),
+      content-visibility var(--dur-estado) allow-discrete;
+  }
+
+  .pregunta[open]::details-content {
+    block-size: auto;
+  }
+
+  .pregunta__respuesta {
+    max-width: var(--ancho-texto);
+    padding-bottom: var(--espacio-md);
+    color: var(--color-gris-texto);
+  }
+</style>
