@@ -8,18 +8,16 @@
 # conectaba con Decap. DecapBridge lo sustituye hablando el mismo protocolo
 # desde sus propios servidores, sin Auth0 ni servidor OAuth propio.
 #
-# PENDIENTE ANTES DE PUBLICAR:
-#   1. Crear el sitio en https://decapbridge.com (botón "Create site").
-#   2. Copiar el identificador que genera y sustituir IDENTIFICADOR-DECAPBRIDGE
-#      en identity_url. El resto de la configuración ya está lista.
-#   3. Invitar al administrador por correo desde el panel de DecapBridge.
-# Mientras el identificador sea el marcador de posición, /admin carga pero no
-# permite iniciar sesión.
+# El sitio ya está registrado en DecapBridge. Para dar acceso a alguien nuevo,
+# invitarlo por correo desde la pestaña "Manage collaborators" de decapbridge.com.
+#
+# Si el sitio cambia de dirección (al pasar a metalmotta.com), hay que
+# actualizar también la "Decap CMS Login URL" en el panel de DecapBridge.
 
 backend:
   name: git-gateway
   branch: main
-  identity_url: https://auth.decapbridge.com/sites/IDENTIFICADOR-DECAPBRIDGE
+  identity_url: https://auth.decapbridge.com/sites/19d89426-b62e-4e97-bcc6-1b19fc2593e6
   gateway_url: https://gateway.decapbridge.com
   commit_messages:
     create: 'Promoción nueva: {{collection}} "{{slug}}"'
